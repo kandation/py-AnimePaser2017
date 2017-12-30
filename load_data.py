@@ -25,7 +25,7 @@ def get_contents_by_id(id):
             tt = soups.find("iframe")['src']
             type = "online"
         except:
-            tt = soup.find("center").find("a")['href']
+            tt = soups.find("center").find("a")['href']
             type = "download"
 
         if type == "online":
@@ -39,7 +39,7 @@ def get_contents_by_id(id):
                     'url': str_link
                     }
             lk.append(data)
-        else:
+        elif type == "download":
             print(title, url, tt)
             data = {'name': title,
                     'url': tt
@@ -62,3 +62,5 @@ def __init__(id):
         content += html
     content += "</body></html>"
     fw.write(content)
+
+__init__(1199)
