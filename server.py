@@ -13,15 +13,25 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
         # Send headers
         if "/neko/cover" in self.path:
-            self.send_header('Content-type', 'image/jpg')
-            self.send_header('Cache-Control', 'max-age=0')
-            self.send_header('If-Modified-Since', 'Tue, 03 Jan 2017 07:46:03 GMT')
-            self.end_headers()
+            try:
+                self.send_header('Content-type', 'image/jpg')
+                self.send_header('Cache-Control', 'max-age=0')
+                self.send_header('If-Modified-Since', 'Tue, 03 Jan 2017 07:46:03 GMT')
+                self.end_headers()
 
-            s = str(self.path).split("/neko/cover/")[1].split(".jpg")[0]
-            fo = open("./neko/cover/"+str(s)+'.jpg', mode='rb')
-            message = fo.read()
-            self.wfile.write(message)
+                s = str(self.path).split("/neko/cover/")[1].split(".jpg")[0]
+                fo = open("./neko/cover/"+str(s)+'.jpg', mode='rb')
+                message = fo.read()
+                self.wfile.write(message)
+            except:
+                print("Cannot find Cover! get 404.png")
+                self.send_header('Content-type', 'image/png')
+                self.send_header('Cache-Control', 'max-age=0')
+                self.send_header('If-Modified-Since', 'Tue, 03 Jan 2017 07:46:03 GMT')
+                self.end_headers()
+                fo = open('404.png', mode='rb')
+                message = fo.read()
+                self.wfile.write(message)
 
         elif "neko" in self.path:
             self.send_header('Content-type', 'text/html')
@@ -59,6 +69,3 @@ def run():
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
     print('running server...')
     httpd.serve_forever()
-
-
-run()

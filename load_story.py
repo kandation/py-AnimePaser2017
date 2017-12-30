@@ -51,6 +51,10 @@ def get_anime_list(stop):
         os.mkdir("./anime_list")
     except:
         pass
+    try:
+        os.remove("./anime_list/list.txt")
+    except:
+        pass
     fw = open("./anime_list/list.txt", mode="w", encoding="utf-8")
     fw.write(list)
     fw.close()
