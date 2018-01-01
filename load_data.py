@@ -48,6 +48,7 @@ def get_contents_by_id(id):
     return lk
 
 
+
 def __init__(id):
     path = "neko/list/" + str(id)
     try:
@@ -63,4 +64,3 @@ def __init__(id):
     content += "</body></html>"
     fw.write(content)
 
-__init__(1199)
