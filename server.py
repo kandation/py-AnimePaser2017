@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import load_data, os
-import misa.load_data as misa
+import misa
 # HTTPRequestHandler class
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
@@ -11,7 +11,7 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
 
         # Send headers
-        if "/neko/cover" in self.path:
+        if "/neko/cover/" in self.path:
             try:
                 self.send_header('Content-type', 'image/jpg')
                 self.send_header('Cache-Control', 'max-age=0')
@@ -32,16 +32,27 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
                 message = fo.read()
                 self.wfile.write(message)
 
-        elif "neko" in self.path:
+        elif "/neko/" in self.path:
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             s = str(self.path).split("/neko/")[1]
-            load_data.__init__(s)
-            fo = open('./neko/list/'+str(s)+'/index.html', mode='r', encoding='utf-8')
-            message = str(fo.read())
-            self.wfile.write(bytes(message, "utf8"))
-        if "/" == self.path:
+            if len(s) > 0:
+                load_data.__init__(s)
+                fo = open('./neko/list/'+str(s)+'/index.html', mode='r', encoding='utf-8')
+                message = str(fo.read())
+                self.wfile.write(bytes(message, "utf8"))
+
+        elif "/neko" == self.path:
             fo = open('index.html', mode='r', encoding='utf-8')
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            # Send message back to client
+            message = str(fo.read())
+            # Write content as utf-8 data
+            self.wfile.write(bytes(message, "utf8"))
+
+        if "/" == self.path:
+            fo = open('select.html', mode='r', encoding='utf-8')
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             # Send message back to client
@@ -56,7 +67,7 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             story_id = str(self.path).replace("/misa/misa/story/", "").replace("/", "")
             print("User need >> ",story_id)
-            misa.generate_story_in_html(story_id)
+            misa.load_data.generate_story_in_html(story_id)
             fo = open('./misa/story/' + str(story_id) + '/index.html', mode='rb')
             self.wfile.write(fo.read())
             fo.close()
@@ -77,13 +88,14 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
                 pass
             os.chdir("..")
         elif "/misa/" in self.path:
-            os.chdir("./misa/")
+            #os.chdir("misa/")
+            #misa.load_data.__init__()
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             fo = open('./index.html', mode='rb')
             self.wfile.write(fo.read())
             fo.close()
-            os.chdir("..")
+            #os.chdir("..")
 
 
 
@@ -108,4 +120,3 @@ def run(ip_addr):
     print('running server...')
     httpd.serve_forever()
 
-run("127.0.0.1")

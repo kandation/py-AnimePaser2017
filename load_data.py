@@ -18,15 +18,24 @@ def get_contents_by_id(id):
         type = "none"
         n = link['href'].split("http://neko-miku.com/play/")[1].split("/")[0]
         url = "http://neko-miku.com/player/"+str(n)+"/"
+        print(url)
         rea = requests.get(url)
         soups = BeautifulSoup(rea.text, "html.parser")
         title = link.text
+
         try:
             tt = soups.find("iframe")['src']
             type = "online"
         except:
-            tt = soups.find("center").find("a")['href']
-            type = "download"
+            pass
+
+        if type == "none":
+            try:
+                tt = soups.find("center").find("a")['href']
+                print(">>",tt)
+                type = "download"
+            except:
+                type = "other"
 
         if type == "online":
             if "openload" in tt:
@@ -44,6 +53,12 @@ def get_contents_by_id(id):
             data = {'name': title,
                     'url': tt
                     }
+            lk.append(data)
+        elif type == "other":
+            data = {
+                'name': title+" (Neko)",
+                'url': url
+            }
             lk.append(data)
     return lk
 

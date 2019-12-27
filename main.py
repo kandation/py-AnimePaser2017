@@ -11,6 +11,7 @@ def sv(id_adr):
     print("New Thread server")
     server.run(id_adr)
 
+
 def window(id_adr):
     windows.__init__(id_adr)
 
@@ -30,6 +31,6 @@ if os.path.exists("./anime_list/list.txt"):
 else:
     load_story.__init__()
 generate_html.__init__()
-
+print(id_adr, "ddd")
 _thread.start_new_thread(sv, (id_adr,))
 window(id_adr)
